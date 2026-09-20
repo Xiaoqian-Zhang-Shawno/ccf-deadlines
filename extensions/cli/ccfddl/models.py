@@ -66,6 +66,8 @@ class ConferenceYear:
     timezone: str
     date: str
     place: str
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "ConferenceYear":
@@ -78,10 +80,12 @@ class ConferenceYear:
             timezone=data.get("timezone", "UTC"),
             date=data.get("date", ""),
             place=data.get("place", ""),
+            start_date=data.get("start_date"),
+            end_date=data.get("end_date"),
         )
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        result = {
             "year": self.year,
             "id": self.id,
             "link": self.link,
@@ -90,6 +94,11 @@ class ConferenceYear:
             "date": self.date,
             "place": self.place,
         }
+        if self.start_date is not None:
+            result["start_date"] = self.start_date
+        if self.end_date is not None:
+            result["end_date"] = self.end_date
+        return result
 
 
 @dataclass

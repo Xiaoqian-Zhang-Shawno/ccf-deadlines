@@ -72,11 +72,15 @@ class TestConferenceYear:
             "timezone": "UTC-8",
             "date": "June 2025",
             "place": "Seattle",
+            "start_date": "2025-06-10",
+            "end_date": "2025-06-17",
         }
         conf_year = ConferenceYear.from_dict(data)
         assert conf_year.year == 2025
         assert conf_year.id == "cvpr25"
         assert len(conf_year.timeline) == 1
+        assert conf_year.start_date == "2025-06-10"
+        assert conf_year.end_date == "2025-06-17"
 
     def test_to_dict(self):
         conf_year = ConferenceYear(
@@ -87,10 +91,14 @@ class TestConferenceYear:
             timezone="UTC-8",
             date="June 2025",
             place="Seattle",
+            start_date="2025-06-10",
+            end_date="2025-06-17",
         )
         result = conf_year.to_dict()
         assert result["year"] == 2025
         assert result["id"] == "cvpr25"
+        assert result["start_date"] == "2025-06-10"
+        assert result["end_date"] == "2025-06-17"
 
 
 class TestConference:

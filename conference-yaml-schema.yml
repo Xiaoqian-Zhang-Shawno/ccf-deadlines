@@ -67,6 +67,9 @@ items:
       type: array
       items:
         type: object
+        dependencies:
+          end_date:
+            - start_date
         required:
           - year
           - id
@@ -142,6 +145,16 @@ items:
             description: When the main conference is happening, e.g., Mar 12-16, 2021
             type: string
             pattern: ^[ -~]+$
+          start_date:
+            description: Optional structured first day of the conference, in YYYY-MM-DD format
+            type: string
+            format: date
+            pattern: ^[1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$
+          end_date:
+            description: Optional structured last day of the conference (inclusive), in YYYY-MM-DD format
+            type: string
+            format: date
+            pattern: ^[1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$
           place:
             description: Where the main conference is happening, e.g., city, country
             type: string

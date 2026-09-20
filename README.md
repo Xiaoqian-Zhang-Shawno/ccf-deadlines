@@ -84,6 +84,8 @@ Example file: conference/DB/sigmod.yml
           comment: 'second round'
       timezone: UTC-8
       date: June 12-17, 2022
+      start_date: '2022-06-12'
+      end_date: '2022-06-17'
       place: Philadelphia, PA, USA
 ```
 
@@ -155,6 +157,14 @@ Description of the fields:
    <tr>
       <td colspan="2"><code>date</code>*</td>
       <td>When the main conference is happening, e.g., Mar 12-16, 2021</td>
+   </tr>
+   <tr>
+      <td colspan="2"><code>start_date</code></td>
+      <td>Optional structured first day of the conference, in <code>yyyy-mm-dd</code> format. Used by the iCal feed when present.</td>
+   </tr>
+   <tr>
+      <td colspan="2"><code>end_date</code></td>
+      <td>Optional structured last day of the conference (inclusive), in <code>yyyy-mm-dd</code> format. Requires <code>start_date</code>.</td>
    </tr>
    <tr>
       <td colspan="2"><code>place</code>*</td>
