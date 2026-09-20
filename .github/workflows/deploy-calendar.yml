@@ -16,8 +16,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: calendar-pages
@@ -26,6 +24,10 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -69,3 +71,26 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+  keep-schedule-active:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out fork
+        uses: actions/checkout@v7
+
+      - name: Record monthly calendar activity
+        run: |
+          current_month=$(date -u +%Y-%m)
+          marker=.github/calendar-schedule-keepalive
+          if [ "$(cat "$marker" 2>/dev/null || true)" = "$current_month" ]; then
+            exit 0
+          fi
+          echo "$current_month" > "$marker"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add "$marker"
+          git commit -m "chore: keep calendar schedule active [skip ci]"
+          git push origin HEAD:main
