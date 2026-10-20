@@ -210,7 +210,8 @@ def create_vtimezone(tz: timezone) -> Timezone:
 
 
 def convert_to_ical(
-    file_paths: list[str], output_path: str, lang: str = "en", SUB_MAPPING={}
+    file_paths: list[str], output_path: str, lang: str = "en", SUB_MAPPING={},
+    include_conference_dates: bool = True,
 ):
     cal = Calendar()
     cal.add("prodid", "-//会议截止日历//ccfddl.com//")
@@ -250,7 +251,7 @@ def convert_to_ical(
                 ) or None
 
                 conference_date_range = get_conference_date_range(conf)
-                if conference_date_range is not None:
+                if include_conference_dates and conference_date_range is not None:
                     conference_start, conference_end = conference_date_range
                     conference_event = Event()
                     conference_event.add(
@@ -476,6 +477,7 @@ if __name__ == "__main__":
                 f"deadlines_{lang}_{key.replace('*', 'star')}.ics",
                 lang,
                 SUB_MAPPING,
+                include_conference_dates=(key != "ccf_A"),
             ),
         )
         element_mapping(index.keys(), f, thread_pool_size=8)

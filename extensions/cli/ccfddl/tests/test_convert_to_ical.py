@@ -73,7 +73,8 @@ def test_structured_dates_override_legacy_text():
     )
 
 
-def test_convert_to_ical_adds_conference_event(tmp_path):
+@pytest.mark.parametrize("include_conference_dates", [True, False])
+def test_convert_to_ical_adds_conference_event(tmp_path, include_conference_dates):
     conference_file = tmp_path / "cvpr.yml"
     conference_file.write_text(
         """
@@ -105,17 +106,22 @@ def test_convert_to_ical_adds_conference_event(tmp_path):
         str(output_file),
         lang="zh",
         SUB_MAPPING={"AI": "人工智能"},
+        include_conference_dates=include_conference_dates,
     )
 
     calendar = Calendar.from_ical(output_file.read_bytes())
     events = list(calendar.walk("VEVENT"))
     summaries = {str(event["SUMMARY"]): event for event in events}
 
-    assert set(summaries) == {
-        "CVPR 2026 会议",
+    expected = {
         "CVPR 2026 摘要截稿",
         "CVPR 2026 截稿日期",
     }
+    if include_conference_dates:
+        expected.add("CVPR 2026 会议")
+    assert set(summaries) == expected
+    if not include_conference_dates:
+        return
     conference_event = summaries["CVPR 2026 会议"]
     assert conference_event["DTSTART"].dt == date(2026, 6, 3)
     assert conference_event["DTEND"].dt == date(2026, 6, 8)
